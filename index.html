@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chat</title>
+</head>
+<body>
+<ul id="msgList"></ul>
+<div>
+    <input id="nickname" placeholder="'nick"/>
+    <input id="msg" placeholder="'message"/>
+    <button id="sendBtn">send</button>
+</div>
+
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script>
+    const socket = io();
+    const msgList = document.getElementById('msgList');
+    const nickname = document.getElementById('nickname');
+    const msg = document.getElementById('msg');
+
+    const sendBtn = document.getElementById('sendBtn');
+
+    sendBtn.addEventListener('click',function () {
+        socket.emit('chat message',nickname.value+' '+msg.value);
+        msg.value = '';
+        nickname.value = '';
+    })
+
+    socket.on('chat message',function (msg) {
+        msgList.innerHTML+=`<li>${msg}</li>`
+        window.scrollTo(0,document.body.scrollHeight);
+    })
+    msg.addEventListener('keyup',function (e) {
+        if (e.keyCode===13){
+            e.preventDefault();
+            sendBtn.click();
+        }
+    })
+</script>
+</body>
+</html>
